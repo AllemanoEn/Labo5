@@ -39,5 +39,6 @@ string AffichageCentre(string texte, int largeur){
 
 int main() {
     cout << AffichageCentre("SALUT",21);
+    //Bonjour je fais un test de github KRAKEN
 
 }
