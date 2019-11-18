@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -58,8 +59,8 @@ int calculDuJour (int annee){
 }
 
 int checkEntree(string msgQuestion, string msgErreur, int iMin, int iMax){
-    
-	int iEntree = 0;
+
+    int iEntree = 0;
 
     do{
         cin.clear();
@@ -76,7 +77,7 @@ string AffichageCentre(string texte, int largeur){
     int espaceGauche = 0;
     largeur -= texte.length();
     espaceGauche =  largeur/2;
-	
+
     for (int i = 0; i <espaceGauche ; ++i) {
         texte = "." + texte;
     }
@@ -88,10 +89,13 @@ string AffichageCentre(string texte, int largeur){
 }
 
 string afficheMois(int iPremierJour, int iNumeroMois){
-    iPremierJour--; iNumeroMois--;
+    //iPremierJour--; iNumeroMois--;
     string resultat = "";
     int iJourParMois[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    string nomMois[] = {"Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"};
     int iJour = 1, iCpt7 = iPremierJour;
+
+    resultat += AffichageCentre(nomMois[iNumeroMois], 21) + "\n";
 
     for (int i = 0; i < 42 ; i++) {
 
@@ -118,7 +122,16 @@ string afficheMois(int iPremierJour, int iNumeroMois){
 }
 
 int main() {
-    cout << AffichageCentre("SALUT",21);
     //Bonjour je fais un test de github KRAKEN
+
+    //checkEntree("Quelle annee voulez-vous afficher?","Entree non valide", 1, 7);
+
+    //Quelle année vouleu-vous afficher ?
+    int annee = 1992;
+    //Position du Lundi (1-7)
+    int lundiPos = 4;
+
+    int iPremierJour = calculDuJour(annee);
+    cout << afficheMois(iPremierJour,1);
 
 }
