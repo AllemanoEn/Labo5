@@ -23,10 +23,60 @@ string semaineFormatee(int pos){
     }
 }
 
+/*Fonction qui détermine si l'année est bissectile*/
+bool estBissextile(int annee)
+{
+    if(annee%4==0 && annee%100!=0 || annee%400==0)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+//Formule trouvée sur (méthode 2) :https://fr.wikibooks.org/wiki/Curiosit%C3%A9s_math%C3%A9matiques/Trouver_le_jour_de_la_semaine_avec_une_date_donn%C3%A9e
+int calculDuJour (int annee){
+
+    //Nous n'avons besoin que du premier jour du premier mois le 01 Janvier.
+    const int MOIS = 1;
+    const int JOUR = 1;
+
+    //Ces deux calculs vienent de la formule citée plus haut, nous faisons donc "-1" et "+10" car nous ne voulons que le mois de Janvier
+    int anneeFormule = annee-1;
+    int moisFormule = MOIS + 10;
+
+    int premierJourDuMois = (JOUR + anneeFormule + anneeFormule/4 - anneeFormule/100 + anneeFormule/400 + (31*moisFormule)/12) % 7;
+
+    /*Décalage du résultat pour avoir le lundi à 0, mardi à 1 etc.. car la formule de base ressort le dimanche à 0.
+    or pour la suite du labo nous voulons que le dimanche soit à la position 6.*/
+    if (premierJourDuMois == 0) {
+        premierJourDuMois = 6;
+    }
+    else {
+        premierJourDuMois -= 1;
+    }
+    return premierJourDuMois;
+}
+
+int checkEntree(string msgQuestion, string msgErreur, int iMin, int iMax){
+    
+	int iEntree = 0;
+
+    do{
+        cin.clear();
+        cout << msgQuestion << " " << "(" << iMax << "-" << iMin << ") ";
+        cin >> iEntree;
+        // Flush toute la ligne de l'entrée standard pour "réinitialiser"
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }while (iEntree < iMin || iEntree > iMax || cin.fail());
+
+    return iEntree;
+}
+
 string AffichageCentre(string texte, int largeur){
     int espaceGauche = 0;
     largeur -= texte.length();
     espaceGauche =  largeur/2;
+	
     for (int i = 0; i <espaceGauche ; ++i) {
         texte = "." + texte;
     }
@@ -35,6 +85,36 @@ string AffichageCentre(string texte, int largeur){
     }
 
     return texte;
+}
+
+string afficheMois(int iPremierJour, int iNumeroMois){
+    iPremierJour--; iNumeroMois--;
+    string resultat = "";
+    int iJourParMois[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    int iJour = 1, iCpt7 = iPremierJour;
+
+    for (int i = 0; i < 42 ; i++) {
+
+        if(i%7==0 && i!=0){
+            resultat += "\n";
+        }
+
+        if(i == iPremierJour && iJour <= iJourParMois[iNumeroMois]){
+            if(iJour <= 9){
+                resultat += " " + to_string(iJour);
+            }else{
+                resultat += to_string(iJour);
+            }
+            iPremierJour++;
+            iJour++;
+        }else{
+            resultat += " -";
+        }
+
+        resultat += " ";
+    }
+
+    return resultat;
 }
 
 int main() {
