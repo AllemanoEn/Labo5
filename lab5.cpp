@@ -3,34 +3,30 @@
 
 using namespace std;
 
-
-string strResultatFinalMois = "";
-int iJourParMois[] = {31,28,31,30,31,30,31,31,30,31,30,31};
-string nomMois[] = {"Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"};
-
-
-
-void semaineFormatee(int pos){
+string semaineFormatee(int pos){
     string strSemaine = "LMMJVSD", resultat = "";
-    pos -= 1; //Dès le début on fait -1 à la position pour la faire correspondre au position des jours dans le string "strSemaine"
+    //pos -= 1; //Dès le début on fait -1 à la position pour la faire correspondre au position des jours dans le string "strSemaine"
     if(pos==0){ //Si on veut une semaine "normale", on retourne simplement strSemaine
 
-        for (int i = 0; i < strSemaine.length() ; ++i) {
-            cout << strSemaine[i];
+        for (int i = 0; i < strSemaine.length() + 1 ; ++i) {
+            resultat += '.'+'.' + strSemaine[i];
         }
+
     }else{
         const int NBR_JOUR_SEMAINE = 7;
         int iPremierJour = NBR_JOUR_SEMAINE - pos; //On definis le premier jour à afficher en fonction de la position
 
         for (int j = 0; j < strSemaine.length(); j++){
-            resultat += "." + strSemaine[iPremierJour];
-            resultat += ".";
+            resultat += ".." + strSemaine[iPremierJour];
             iPremierJour++;
             if(iPremierJour == strSemaine.length()){ //Au moment où on arrive à la dernière position du jour de la semaine, on remet le compteur à 0 pour afficher les jours restant. (ex: 4560123 ou encore 5601234, 0 étant le lundi)
                 iPremierJour = 0;
             }
         }
     }
+
+    return resultat;
+
 }
 
 /*Fonction qui détermine si l'année est bissectile*/
@@ -87,10 +83,10 @@ string AffichageCentre(string texte, int largeur){
     largeur -= texte.length();
     espaceGauche =  largeur/2;
 
-    for (int i = 0; i <espaceGauche ; ++i) {
+    for (int i = 0; i < espaceGauche ; ++i) {
         texte = "." + texte;
     }
-    for (int i = 0; i <espaceGauche ; ++i) {
+    for (int i = 0; i <= espaceGauche ; ++i) {
         texte += ".";
     }
 
@@ -98,9 +94,17 @@ string AffichageCentre(string texte, int largeur){
 }
 
 void afficheMois(int iPremierJour, int iNumeroMois){
-    int iJour = 1, iCpt7 = iPremierJour;
+
+    int iJourParMois[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    string nomMois[] = {"Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"};
+
+    string strResultatFinalMois = "";
+
+    int iJour = 1;
+    static int iCptJourSemaine;
 
     strResultatFinalMois += AffichageCentre(nomMois[iNumeroMois], 21) + "\n";
+    strResultatFinalMois += semaineFormatee(0) + "\n";
 
     for (int i = 0; i < 42 ; i++) {
 
@@ -110,23 +114,33 @@ void afficheMois(int iPremierJour, int iNumeroMois){
 
         if(i == iPremierJour && iJour <= iJourParMois[iNumeroMois]){
             if(iJour <= 9){
-                strResultatFinalMois += "." + to_string(iJour);
+                strResultatFinalMois += ".." + to_string(iJour);
             }else{
-                strResultatFinalMois += to_string(iJour);
+                strResultatFinalMois += "." + to_string(iJour);
             }
+
+            //A quel jour de la semaine le premier jour du moi correspond
             iPremierJour++;
+
+            //Incrémentation des jours du mois
             iJour++;
+
+            //Compteur servant à incrémenter jusqu'a 6
+            iCptJourSemaine++;
+
+            if(iCptJourSemaine > 6){
+                iCptJourSemaine = 0;
+            }
+
         }else{
-            strResultatFinalMois += "..";
+            strResultatFinalMois += "...";
         }
 
-        strResultatFinalMois += ".";
     }
     cout << strResultatFinalMois + "\n";
 
-    strResultatFinalMois = "";
     if(iNumeroMois < 11){
-        afficheMois(0,iNumeroMois+1);
+        afficheMois(iCptJourSemaine,iNumeroMois+1);
     }
 
 }
