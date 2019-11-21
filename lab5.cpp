@@ -8,8 +8,9 @@ string semaineFormatee(int pos){
     //pos -= 1; //Dès le début on fait -1 à la position pour la faire correspondre au position des jours dans le string "strSemaine"
     if(pos==0){ //Si on veut une semaine "normale", on retourne simplement strSemaine
 
-        for (int i = 0; i < strSemaine.length() + 1 ; ++i) {
-            resultat += '.'+'.' + strSemaine[i];
+        for (int i = 0; i < strSemaine.length(); ++i) {
+            resultat += "..";
+            resultat += strSemaine[i];
         }
 
     }else{
@@ -17,7 +18,8 @@ string semaineFormatee(int pos){
         int iPremierJour = NBR_JOUR_SEMAINE - pos; //On definis le premier jour à afficher en fonction de la position
 
         for (int j = 0; j < strSemaine.length(); j++){
-            resultat += ".." + strSemaine[iPremierJour];
+            resultat += "..";
+            resultat += strSemaine[iPremierJour];
             iPremierJour++;
             if(iPremierJour == strSemaine.length()){ //Au moment où on arrive à la dernière position du jour de la semaine, on remet le compteur à 0 pour afficher les jours restant. (ex: 4560123 ou encore 5601234, 0 étant le lundi)
                 iPremierJour = 0;
@@ -25,7 +27,7 @@ string semaineFormatee(int pos){
         }
     }
 
-    return resultat;
+    return resultat + "\n";
 
 }
 
@@ -65,35 +67,39 @@ int calculDuJour (int annee){
 
 int checkEntree(string msgQuestion, string msgErreur, int iMin, int iMax){
 
-    int iEntree = 0;
+    int iEntree;
 
-    do{
+    cout << msgQuestion << " " << "(" << iMin << "-" << iMax << ") ";
+    cin >> iEntree;
+
+
+
+
+    while (iEntree < iMin || iEntree > iMax){
         cin.clear();
-        cout << msgQuestion << " " << "(" << iMax << "-" << iMin << ") ";
-        cin >> iEntree;
-        // Flush toute la ligne de l'entrée standard pour "réinitialiser"
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }while (iEntree < iMin || iEntree > iMax || cin.fail());
+        cout << msgQuestion << " " << "(" << iMin << "-" << iMax << ") ";
+        cin >> iEntree;
+    }
 
     return iEntree;
 }
 
-string AffichageCentre(string texte, int largeur){
+string AffichageCentre(string texte, int largeur) {
     int espaceGauche = 0;
     largeur -= texte.length();
-    espaceGauche =  largeur/2;
+    espaceGauche = largeur / 2;
 
-    for (int i = 0; i < espaceGauche ; ++i) {
+    for (int i = 0; i < espaceGauche; ++i) {
         texte = "." + texte;
     }
-    for (int i = 0; i <= espaceGauche ; ++i) {
+    for (int i = 0; i < espaceGauche; ++i) {
         texte += ".";
     }
-
-    return texte;
+    return texte + "\n";
 }
 
-void afficheMois(int iPremierJour, int iNumeroMois){
+void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
 
     int iJourParMois[] = {31,28,31,30,31,30,31,31,30,31,30,31};
     string nomMois[] = {"Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"};
@@ -101,10 +107,11 @@ void afficheMois(int iPremierJour, int iNumeroMois){
     string strResultatFinalMois = "";
 
     int iJour = 1;
-    static int iCptJourSemaine;
+    iPremierJour;
+    static int iCptJourSemaine = iPremierJour;
 
-    strResultatFinalMois += AffichageCentre(nomMois[iNumeroMois], 21) + "\n";
-    strResultatFinalMois += semaineFormatee(0) + "\n";
+    strResultatFinalMois += AffichageCentre(nomMois[iNumeroMois], 21);
+    strResultatFinalMois += semaineFormatee(positionLundi);
 
     for (int i = 0; i < 42 ; i++) {
 
@@ -140,22 +147,20 @@ void afficheMois(int iPremierJour, int iNumeroMois){
     cout << strResultatFinalMois + "\n";
 
     if(iNumeroMois < 11){
-        afficheMois(iCptJourSemaine,iNumeroMois+1);
+        afficheMois(iCptJourSemaine,iNumeroMois+1,positionLundi);
     }
 
 }
 
 int main() {
-    //Bonjour je fais un test de github KRAKEN
+    int iAnnee, iPosLundi;
 
-    //checkEntree("Quelle annee voulez-vous afficher?","Entree non valide", 1, 7);
+    iAnnee = checkEntree("Quelle annee voulez-vous afficher?","Entree non valide", 1600, 3000);
+    iPosLundi = checkEntree("Quel jour de la semaine est le lundi?","Entree non valide", 1, 7);
 
-    //Quelle année vouleu-vous afficher ?
-    int annee = 2018;
-    //Position du Lundi (1-7)
-    //int lundiPos = 4;
+    int iPremierJour = calculDuJour(iAnnee);
 
-    int iPremierJour = calculDuJour(annee);
-    afficheMois(iPremierJour,0);
+    cout << AffichageCentre(to_string(iAnnee),21);
+    afficheMois(iPremierJour,0, --iPosLundi);
 
 }
