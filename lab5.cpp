@@ -5,7 +5,7 @@ using namespace std;
 
 string semaineFormatee(int pos){
     string strSemaine = "LMMJVSD", resultat = "";
-    //pos -= 1; //Dès le début on fait -1 à la position pour la faire correspondre au position des jours dans le string "strSemaine"
+    //pos--; //Dès le début on fait -1 à la position pour la faire correspondre au position des jours dans le string "strSemaine"
     if(pos==0){ //Si on veut une semaine "normale", on retourne simplement strSemaine
 
         for (int i = 0; i < strSemaine.length(); ++i) {
@@ -58,10 +58,10 @@ int calculDuJour (int annee){
     or pour la suite du labo nous voulons que le dimanche soit à la position 6.*/
     if (premierJourDuMois == 0) {
         premierJourDuMois = 6;
+    }else{
+        premierJourDuMois--;
     }
-    else {
-        premierJourDuMois -= 1;
-    }
+
     return premierJourDuMois;
 }
 
@@ -107,7 +107,7 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
     string strResultatFinalMois = "";
 
     int iJour = 1;
-    iPremierJour;
+    iPremierJour += positionLundi;
     static int iCptJourSemaine = iPremierJour;
 
     strResultatFinalMois += AffichageCentre(nomMois[iNumeroMois], 21);
@@ -147,7 +147,7 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
     cout << strResultatFinalMois + "\n";
 
     if(iNumeroMois < 11){
-        afficheMois(iCptJourSemaine,iNumeroMois+1,positionLundi);
+        afficheMois(iCptJourSemaine,iNumeroMois+1, positionLundi);
     }
 
 }
@@ -157,10 +157,10 @@ int main() {
 
     iAnnee = checkEntree("Quelle annee voulez-vous afficher?","Entree non valide", 1600, 3000);
     iPosLundi = checkEntree("Quel jour de la semaine est le lundi?","Entree non valide", 1, 7);
+    iPosLundi--;
 
     int iPremierJour = calculDuJour(iAnnee);
 
     cout << AffichageCentre(to_string(iAnnee),21);
-    afficheMois(iPremierJour,0, --iPosLundi);
-
+    afficheMois(iPremierJour,0, iPosLundi);
 }
