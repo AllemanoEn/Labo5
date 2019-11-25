@@ -107,7 +107,6 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
     string strResultatFinalMois = "";
 
     int iJour = 1;
-    iPremierJour += positionLundi;
     static int iCptJourSemaine = iPremierJour;
 
     strResultatFinalMois += AffichageCentre(nomMois[iNumeroMois], 21);
@@ -162,5 +161,5 @@ int main() {
     int iPremierJour = calculDuJour(iAnnee);
 
     cout << AffichageCentre(to_string(iAnnee),21);
-    afficheMois(iPremierJour,0, iPosLundi);
+    afficheMois(iPremierJour + iPosLundi,0, iPosLundi);
 }
