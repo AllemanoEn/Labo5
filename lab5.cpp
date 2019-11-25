@@ -5,11 +5,10 @@ using namespace std;
 
 string semaineFormatee(int pos){
     string strSemaine = "LMMJVSD", resultat = "";
-    //pos--; //Dès le début on fait -1 à la position pour la faire correspondre au position des jours dans le string "strSemaine"
     if(pos==0){ //Si on veut une semaine "normale", on retourne simplement strSemaine
 
         for (int i = 0; i < strSemaine.length(); ++i) {
-            resultat += "..";
+            resultat += "  ";
             resultat += strSemaine[i];
         }
 
@@ -18,7 +17,7 @@ string semaineFormatee(int pos){
         int iPremierJour = NBR_JOUR_SEMAINE - pos; //On definis le premier jour à afficher en fonction de la position
 
         for (int j = 0; j < strSemaine.length(); j++){
-            resultat += "..";
+            resultat += "  ";
             resultat += strSemaine[iPremierJour];
             iPremierJour++;
             if(iPremierJour == strSemaine.length()){ //Au moment où on arrive à la dernière position du jour de la semaine, on remet le compteur à 0 pour afficher les jours restant. (ex: 4560123 ou encore 5601234, 0 étant le lundi)
@@ -72,10 +71,8 @@ int checkEntree(string msgQuestion, string msgErreur, int iMin, int iMax){
     cout << msgQuestion << " " << "(" << iMin << "-" << iMax << ") ";
     cin >> iEntree;
 
-
-
-
     while (iEntree < iMin || iEntree > iMax){
+        cout << msgErreur << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << msgQuestion << " " << "(" << iMin << "-" << iMax << ") ";
@@ -86,20 +83,27 @@ int checkEntree(string msgQuestion, string msgErreur, int iMin, int iMax){
 }
 
 string AffichageCentre(string texte, int largeur) {
-    int espaceGauche = 0;
-    largeur -= texte.length();
-    espaceGauche = largeur / 2;
+    int espaceGauche = 0, espaceDroite = 0, espaceRestant = largeur;
+    espaceRestant -= texte.length();
+
+    espaceGauche = espaceRestant / 2;
+
+    if(espaceRestant%2 == 0){
+        espaceDroite = espaceGauche;
+    }else{
+        espaceDroite = espaceGauche + 1;
+    }
 
     for (int i = 0; i < espaceGauche; ++i) {
-        texte = "." + texte;
+        texte = " " + texte;
     }
-    for (int i = 0; i < espaceGauche; ++i) {
-        texte += ".";
+    for (int i = 0; i < espaceDroite; ++i) {
+        texte += " ";
     }
     return texte + "\n";
 }
 
-void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
+void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi, int iAnnee){
 
     int iJourParMois[] = {31,28,31,30,31,30,31,31,30,31,30,31};
     string nomMois[] = {"Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"};
@@ -107,6 +111,15 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
     string strResultatFinalMois = "";
 
     int iJour = 1;
+
+    if(iPremierJour > 7){
+        iPremierJour = iPremierJour -7;
+    }
+
+    if(estBissextile(iAnnee) && iNumeroMois == 1){
+        iJourParMois[iNumeroMois]++;
+    }
+
     static int iCptJourSemaine = iPremierJour;
 
     strResultatFinalMois += AffichageCentre(nomMois[iNumeroMois], 21);
@@ -118,11 +131,12 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
             strResultatFinalMois += "\n";
         }
 
+
         if(i == iPremierJour && iJour <= iJourParMois[iNumeroMois]){
             if(iJour <= 9){
-                strResultatFinalMois += ".." + to_string(iJour);
+                strResultatFinalMois += "  " + to_string(iJour);
             }else{
-                strResultatFinalMois += "." + to_string(iJour);
+                strResultatFinalMois += " " + to_string(iJour);
             }
 
             //A quel jour de la semaine le premier jour du moi correspond
@@ -139,14 +153,15 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi){
             }
 
         }else{
-            strResultatFinalMois += "...";
+            strResultatFinalMois += "   ";
         }
 
     }
-    cout << strResultatFinalMois + "\n";
+
+    cout << "\n" + strResultatFinalMois;
 
     if(iNumeroMois < 11){
-        afficheMois(iCptJourSemaine,iNumeroMois+1, positionLundi);
+        afficheMois(iCptJourSemaine,iNumeroMois+1, positionLundi, iAnnee);
     }
 
 }
@@ -160,6 +175,7 @@ int main() {
 
     int iPremierJour = calculDuJour(iAnnee);
 
-    cout << AffichageCentre(to_string(iAnnee),21);
-    afficheMois(iPremierJour + iPosLundi,0, iPosLundi);
+    cout << "\n" + AffichageCentre(to_string(iAnnee),21);
+    cout << "                     ";
+    afficheMois(iPremierJour + iPosLundi,0, iPosLundi , iAnnee);
 }
