@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include <iomanip>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ string semaineFormatee(int pos){
             resultat += "  ";
             resultat += strSemaine[i];
         }
-
+        
     }else{
         const int NBR_JOUR_SEMAINE = 7;
         int iPremierJour = NBR_JOUR_SEMAINE - pos; //On definis le premier jour à afficher en fonction de la position
@@ -27,7 +28,6 @@ string semaineFormatee(int pos){
     }
 
     return resultat + "\n";
-
 }
 
 /*Fonction qui détermine si l'année est bissectile*/
@@ -110,6 +110,7 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi, int iAnne
 
     string strResultatFinalMois = "";
 
+    int iCptEspace = 0;
     int iJour = 1;
 
     if(iPremierJour > 7){
@@ -130,8 +131,7 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi, int iAnne
         if(i%7==0 && i!=0){
             strResultatFinalMois += "\n";
         }
-
-
+        
         if(i == iPremierJour && iJour <= iJourParMois[iNumeroMois]){
             if(iJour <= 9){
                 strResultatFinalMois += "  " + to_string(iJour);
@@ -152,18 +152,25 @@ void afficheMois(int iPremierJour, int iNumeroMois, int positionLundi, int iAnne
                 iCptJourSemaine = 0;
             }
 
+            iCptEspace = 0;
+
         }else{
             strResultatFinalMois += "   ";
+            iCptEspace++;
         }
-
     }
 
-    cout << "\n" + strResultatFinalMois;
+    cout << strResultatFinalMois << endl;
+
+    if(iCptEspace >= 7){
+
+    }else{
+        cout << string(21,' ') << endl;
+    }
 
     if(iNumeroMois < 11){
         afficheMois(iCptJourSemaine,iNumeroMois+1, positionLundi, iAnnee);
     }
-
 }
 
 int main() {
@@ -175,7 +182,8 @@ int main() {
 
     int iPremierJour = calculDuJour(iAnnee);
 
-    cout << "\n" + AffichageCentre(to_string(iAnnee),21);
-    cout << "                     ";
+    cout << endl << AffichageCentre(to_string(iAnnee),21);
+    cout << string(21,' ') << endl;
+
     afficheMois(iPremierJour + iPosLundi,0, iPosLundi , iAnnee);
 }
